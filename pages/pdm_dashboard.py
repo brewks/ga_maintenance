@@ -6,7 +6,7 @@ import seaborn as sns
 import time
 
 # === CONFIG ===
-DB_PATH = ga_maintenance.db"
+DB_PATH = "ga_maintenance.db"
 
 # === FUNCTIONS ===
 def load_data(query):
