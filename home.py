@@ -5,7 +5,7 @@ import json
 import altair as alt
 from utils import load_df, validate_metrics
 
-DB_PATH = "C:/Users/workd/Desktop/ga_maintenance/PdM/ga_maintenance.db"
+DB_PATH = "ga_maintenance.db"
 
 
 # Function to load data from the database
