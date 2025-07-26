@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 import json
 
-DB_PATH = "C:/Users/workd/Desktop/ga_maintenance/PdM/ga_maintenance.db"
+DB_PATH = "ga_maintenance.db"
 
 def load_df(query):
     """Run a SQL query and return a pandas DataFrame."""
