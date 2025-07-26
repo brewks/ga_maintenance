@@ -4,7 +4,7 @@ import sqlite3
 import json
 import altair as alt
 
-DB_PATH = "C:/Users/workd/Desktop/ga_maintenance/PdM/ga_maintenance.db"
+DB_PATH = "ga_maintenance.db"
 
 
 def load_df(query):
