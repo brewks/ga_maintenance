@@ -10,16 +10,25 @@ SQL_SEED_FILE = "full_pdm_seed.sql"
 
 # Rebuild DB from SQL seed file if not present
 if not os.path.exists(DB_PATH):
-    with sqlite3.connect(DB_PATH) as conn:
-        with open(SQL_SEED_FILE, "r") as f:
-            conn.executescript(f.read())
+    st.warning("Database not found. Restoring from seed SQL file...")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            with open(SQL_SEED_FILE, "r") as f:
+                conn.executescript(f.read())
+        st.success("✅ Database restored successfully.")
+    except Exception as e:
+        st.error(f"❌ Database restoration failed: {e}")
 
-
+# Utility to load SQL data into DataFrame
 def load_df(query):
-    conn = sqlite3.connect(DB_PATH)
-    df = pd.read_sql_query(query, conn)
-    conn.close()
-    return df
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        df = pd.read_sql_query(query, conn)
+        conn.close()
+        return df
+    except Exception as e:
+        st.error(f"Failed to load data from database: {e}")
+        return pd.DataFrame()
 
 def validate_metrics(metrics_json):
     try:
