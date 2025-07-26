@@ -5,33 +5,31 @@ import json
 import altair as alt
 import os
 
+# === CONFIGURATION ===
 DB_PATH = "ga_maintenance.db"
 SQL_SEED_FILE = "full_pdm_seed.sql"
 
-# Rebuild DB from SQL seed file if not present (for Streamlit Cloud)
+# === AUTOMATIC DB RESTORATION IF MISSING ===
 if not os.path.exists(DB_PATH):
-    st.warning("Database not found. Attempting to rebuild from SQL seed file...")
-    if os.path.exists(SQL_SEED_FILE):
-        try:
-            with sqlite3.connect(DB_PATH) as conn:
-                with open(SQL_SEED_FILE, "r") as f:
-                    conn.executescript(f.read())
-            st.success("✅ Database restored from SQL seed file.")
-        except Exception as e:
-            st.error(f"❌ Failed to rebuild database: {e}")
-    else:
-        st.error("❌ SQL seed file not found in working directory.")
+    st.warning("Database file not found. Attempting to restore from SQL seed...")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            with open(SQL_SEED_FILE, "r") as f:
+                conn.executescript(f.read())
+        st.success("Database successfully restored.")
+    except Exception as e:
+        st.error(f"Database restoration failed: {e}")
 
+# === HELPER FUNCTION TO LOAD DATA FROM DB ===
 def load_df(query):
     try:
-        conn = sqlite3.connect(DB_PATH)
-        df = pd.read_sql_query(query, conn)
-        conn.close()
-        return df
+        with sqlite3.connect(DB_PATH) as conn:
+            return pd.read_sql_query(query, conn)
     except Exception as e:
-        st.error(f"Failed to load data from database: {e}")
+        st.error(f"Query failed: {e}")
         return pd.DataFrame()
 
+# === VALIDATE MODEL METRICS ===
 def validate_metrics(metrics_json):
     try:
         data = json.loads(metrics_json)
