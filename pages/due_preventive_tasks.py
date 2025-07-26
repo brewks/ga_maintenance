@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 
-DB_PATH = "a_maintenance.db"
+DB_PATH = "ga_maintenance.db"
 
 st.title("🛠 Due Preventive Maintenance Tasks (FAA-Aligned)")
 
