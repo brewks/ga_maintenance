@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-import matplotlib.pylplot as plt
+import matplotlib.pyplot as plt
 import seaborn as sns
 import time
 
