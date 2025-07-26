@@ -5,6 +5,13 @@ import json
 import altair as alt
 
 DB_PATH = "ga_maintenance.db"
+SQL_SEED_FILE = "full_pdm_seed.sql"
+
+# Rebuild DB from SQL seed file if not present
+if not os.path.exists(DB_PATH):
+    with sqlite3.connect(DB_PATH) as conn:
+        with open(SQL_SEED_FILE, "r") as f:
+            conn.executescript(f.read())
 
 
 def load_df(query):
