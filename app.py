@@ -8,18 +8,20 @@ import os
 DB_PATH = "ga_maintenance.db"
 SQL_SEED_FILE = "full_pdm_seed.sql"
 
-# Rebuild DB from SQL seed file if not present
+# Rebuild DB from SQL seed file if not present (for Streamlit Cloud)
 if not os.path.exists(DB_PATH):
-    st.warning("Database not found. Restoring from seed SQL file...")
-    try:
-        with sqlite3.connect(DB_PATH) as conn:
-            with open(SQL_SEED_FILE, "r") as f:
-                conn.executescript(f.read())
-        st.success("✅ Database restored successfully.")
-    except Exception as e:
-        st.error(f"❌ Database restoration failed: {e}")
+    st.warning("Database not found. Attempting to rebuild from SQL seed file...")
+    if os.path.exists(SQL_SEED_FILE):
+        try:
+            with sqlite3.connect(DB_PATH) as conn:
+                with open(SQL_SEED_FILE, "r") as f:
+                    conn.executescript(f.read())
+            st.success("✅ Database restored from SQL seed file.")
+        except Exception as e:
+            st.error(f"❌ Failed to rebuild database: {e}")
+    else:
+        st.error("❌ SQL seed file not found in working directory.")
 
-# Utility to load SQL data into DataFrame
 def load_df(query):
     try:
         conn = sqlite3.connect(DB_PATH)
@@ -34,10 +36,7 @@ def validate_metrics(metrics_json):
     try:
         data = json.loads(metrics_json)
         required = ["precision", "recall", "accuracy", "f1_score"]
-        for key in required:
-            if key not in data:
-                return False
-        return True
+        return all(key in data for key in required)
     except:
         return False
 
@@ -128,114 +127,117 @@ st.markdown('<div class="header-bar">General Aviation Predictive Maintenance Das
 # === SELECTOR ===
 component_names = [f"{row['tail_number']} - {row['name']}" for _, row in components_df.iterrows()]
 component_map = {f"{row['tail_number']} - {row['name']}": row['component_id'] for _, row in components_df.iterrows()}
-selected_component = st.selectbox("Select Aircraft Component:", component_names)
 
-comp_id = component_map[selected_component]
-comp_data = components_df[components_df['component_id'] == comp_id].iloc[0]
-comp_preds = predictions_df[predictions_df['component_id'] == comp_id]
+if component_names:
+    selected_component = st.selectbox("Select Aircraft Component:", component_names)
+    comp_id = component_map[selected_component]
+    comp_data = components_df[components_df['component_id'] == comp_id].iloc[0]
+    comp_preds = predictions_df[predictions_df['component_id'] == comp_id]
 
-# === LAYOUT ===
-col1, col2 = st.columns([2,1])
+    col1, col2 = st.columns([2,1])
 
-with col1:
-    st.markdown(f"""
-    <div class="card" style=background:#3b5998; color:white;">
-    <h4 style="color:white; font-weight:700; margin-bottom:10px;">{selected_component}</h4>
-    <b>Condition:</b> {comp_data['condition']}<br>
-    <b>Remaining Useful Life:</b> {comp_data['remaining_useful_life']:.2f} hours<br>
-    <b>Health Score:</b> {comp_data['last_health_score']}
-    </div>
-    """, unsafe_allow_html=True)
-
-    crit = comp_preds[(comp_preds['prediction_type'] == 'failure') & (comp_preds['confidence'] > 0.9)]
-    if not crit.empty:
-        row = crit.iloc[0]
+    with col1:
         st.markdown(f"""
-        <div class="card" style="background:#e53935; color:white;">
-        <b>⚠ Critical Alert</b><br>
-        Predicted Failure: {row['time_horizon']}<br>
-        Confidence: {row['confidence']*100:.1f}%<br>
-        Explanation: {row['explanation']}
-        </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-        <div class="card" style="background:#43a047; color:white;">
-        <b>No Critical Alerts</b>
+        <div class="card" style=background:#3b5998; color:white;">
+        <h4 style="color:white; font-weight:700; margin-bottom:10px;">{selected_component}</h4>
+        <b>Condition:</b> {comp_data['condition']}<br>
+        <b>Remaining Useful Life:</b> {comp_data['remaining_useful_life']:.2f} hours<br>
+        <b>Health Score:</b> {comp_data['last_health_score']}
         </div>
         """, unsafe_allow_html=True)
 
-    # Altair chart
-    if not comp_preds.empty:
-        alt_data = comp_preds[comp_preds['prediction_type'] == 'remaining_life']
-        if not alt_data.empty:
-            alt_data['prediction_time'] = pd.to_datetime(alt_data['prediction_time'])
-            chart = alt.Chart(alt_data).mark_line(point=True).encode(
-                x=alt.X('prediction_time:T', title='Prediction Time'),
-                y=alt.Y('predicted_value:Q', title='Remaining Useful Life (hrs)'),
-                tooltip=['prediction_time:T', 'predicted_value', 'confidence']
-            ).properties(
-                title="Remaining Useful Life Over Time",
-                width=600,
-                height=300
-            )
-            st.altair_chart(chart, use_container_width=True)
+        crit = comp_preds[(comp_preds['prediction_type'] == 'failure') & (comp_preds['confidence'] > 0.9)]
+        if not crit.empty:
+            row = crit.iloc[0]
+            st.markdown(f"""
+            <div class="card" style="background:#e53935; color:white;">
+            <b>⚠ Critical Alert</b><br>
+            Predicted Failure: {row['time_horizon']}<br>
+            Confidence: {row['confidence']*100:.1f}%<br>
+            Explanation: {row['explanation']}
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.info("No remaining life predictions available for Altair chart.")
+            st.markdown(f"""
+            <div class="card" style="background:#43a047; color:white;">
+            <b>No Critical Alerts</b>
+            </div>
+            """, unsafe_allow_html=True)
 
-with col2:
-    avg_conf = comp_preds['confidence'].mean() * 100 if not comp_preds.empty else 0
-    crit_count = crit.shape[0]
-    avg_rul = comp_data['remaining_useful_life']
+        # Altair chart
+        if not comp_preds.empty:
+            alt_data = comp_preds[comp_preds['prediction_type'] == 'remaining_life']
+            if not alt_data.empty:
+                alt_data['prediction_time'] = pd.to_datetime(alt_data['prediction_time'])
+                chart = alt.Chart(alt_data).mark_line(point=True).encode(
+                    x=alt.X('prediction_time:T', title='Prediction Time'),
+                    y=alt.Y('predicted_value:Q', title='Remaining Useful Life (hrs)'),
+                    tooltip=['prediction_time:T', 'predicted_value', 'confidence']
+                ).properties(
+                    title="Remaining Useful Life Over Time",
+                    width=600,
+                    height=300
+                )
+                st.altair_chart(chart, use_container_width=True)
+            else:
+                st.info("No remaining life predictions available for Altair chart.")
 
-    st.markdown(f"""
-    <div class="metric-card">
-    <b>Avg Confidence</b><br>
-    <span style="font-size:22px;">{avg_conf:.1f}%</span>
-    </div>
-    """, unsafe_allow_html=True)
+    with col2:
+        avg_conf = comp_preds['confidence'].mean() * 100 if not comp_preds.empty else 0
+        crit_count = crit.shape[0]
+        avg_rul = comp_data['remaining_useful_life']
 
-    st.markdown(f"""
-    <div class="metric-card" style="background:#c62828;">
-    <b>Critical Failures</b><br>
-    <span style="font-size:22px;">{crit_count}</span>
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="metric-card">
+        <b>Avg Confidence</b><br>
+        <span style="font-size:22px;">{avg_conf:.1f}%</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.markdown(f"""
-    <div class="metric-card" style="background:#1565c0;">
-    <b>Remaining Useful Life</b><br>
-    <span style="font-size:22px;">{avg_rul:.2f}h</span>
-    </div>
-    """, unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="metric-card" style="background:#c62828;">
+        <b>Critical Failures</b><br>
+        <span style="font-size:22px;">{crit_count}</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # Performance metrics
-    if not comp_preds.empty:
-        selected_model_id = comp_preds['model_id'].iloc[0]
-        metrics_df = load_df(f"""
-            SELECT performance_metrics FROM predictive_models
-            WHERE model_id = {selected_model_id}
-        """)
-        if not metrics_df.empty and metrics_df['performance_metrics'].iloc[0]:
-            metrics_json = metrics_df['performance_metrics'].iloc[0]
-            if validate_metrics(metrics_json):
-                metrics = json.loads(metrics_json)
-                precision = f"{metrics.get('precision', 0) * 100:.1f}%"
-                recall = f"{metrics.get('recall', 0) * 100:.1f}%"
-                accuracy = f"{metrics.get('accuracy', 0) * 100:.1f}%"
-                f1_score = f"{metrics.get('f1_score', 0) * 100:.1f}%"
+        st.markdown(f"""
+        <div class="metric-card" style="background:#1565c0;">
+        <b>Remaining Useful Life</b><br>
+        <span style="font-size:22px;">{avg_rul:.2f}h</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Performance metrics
+        if not comp_preds.empty:
+            selected_model_id = comp_preds['model_id'].iloc[0]
+            metrics_df = load_df(f"""
+                SELECT performance_metrics FROM predictive_models
+                WHERE model_id = {selected_model_id}
+            """)
+            if not metrics_df.empty and metrics_df['performance_metrics'].iloc[0]:
+                metrics_json = metrics_df['performance_metrics'].iloc[0]
+                if validate_metrics(metrics_json):
+                    metrics = json.loads(metrics_json)
+                    precision = f"{metrics.get('precision', 0) * 100:.1f}%"
+                    recall = f"{metrics.get('recall', 0) * 100:.1f}%"
+                    accuracy = f"{metrics.get('accuracy', 0) * 100:.1f}%"
+                    f1_score = f"{metrics.get('f1_score', 0) * 100:.1f}%"
+                else:
+                    precision = recall = accuracy = f1_score = "N/A"
+                    st.warning("⚠ Invalid performance metrics.")
             else:
                 precision = recall = accuracy = f1_score = "N/A"
-                st.warning("⚠ Invalid performance metrics.")
-        else:
-            precision = recall = accuracy = f1_score = "N/A"
 
-        st.markdown(f"""
-        <div class="card" style="background:{metric_bg}; color:white;">
-        <b>Model Performance</b><br>
-        Precision: {precision} | Recall: {recall} | Accuracy: {accuracy} | F1: {f1_score}
-        </div>
-        """, unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="card" style="background:{metric_bg}; color:white;">
+            <b>Model Performance</b><br>
+            Precision: {precision} | Recall: {recall} | Accuracy: {accuracy} | F1: {f1_score}
+            </div>
+            """, unsafe_allow_html=True)
+
+else:
+    st.warning("⚠ No aircraft components available. Database may not have loaded correctly.")
 
 # === JSON validator ===
 st.markdown("---")
