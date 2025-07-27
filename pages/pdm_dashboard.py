@@ -66,14 +66,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === HEADER: LOGO + TITLE INLINE ===
-st.markdown("""
-    <div class="dashboard-header">
-        <img src="logo.png" width="100">
-        <div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>
-    </div>
-""", unsafe_allow_html=True)
+col1, col2 = st.columns([1, 5])
 
-st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
+with col1:
+    st.image("logo.png", width=100)  # logo.png is in the same directory as app.py
+
+with col2:
+    st.markdown(
+        "<h1 style='color:#003366; margin-bottom: 0;'>General Aviation Predictive Maintenance Dashboard</h1>"
+        "<p style='color:#005580; font-size: 16px;'>Live aircraft system health, predictive maintenance insights, and alerts</p>",
+        unsafe_allow_html=True
+    )
 
 # === SIDEBAR CONTROLS ===
 refresh_interval = st.sidebar.slider("Auto-refresh (seconds)", 0, 60, 10)
