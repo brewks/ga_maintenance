@@ -18,17 +18,20 @@ def load_data(query):
 
 def plot_rul_bar(df):
     fig, ax = plt.subplots(figsize=(10, 5))
-    sns.barplot(data=df, x=df['component_id'].astype(str), y='predicted_value', ax=ax, palette='Blues')
-    ax.set_xlabel("Component ID")
-    ax.set_ylabel("Predicted RUL (hours)")
-    ax.set_title("Latest Component RUL Predictions")
+    sns.set_theme(style="darkgrid")
+    sns.barplot(data=df, x=df['component_id'].astype(str), y='predicted_value', ax=ax, palette='mako')
+    ax.set_xlabel("Component ID", fontsize=12)
+    ax.set_ylabel("Predicted RUL (hours)", fontsize=12)
+    ax.set_title("Latest Component RUL Predictions", fontsize=14, weight='bold')
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
 def plot_confidence_rul(df):
     fig, ax = plt.subplots(figsize=(10, 5))
-    sns.scatterplot(data=df, x='component_id', y='predicted_value', size='confidence', hue='confidence', palette='coolwarm', ax=ax, sizes=(50, 300))
-    ax.set_title("RUL vs Component ID (Size = Confidence)")
+    sns.set_theme(style="darkgrid")
+    sns.scatterplot(data=df, x='component_id', y='predicted_value', size='confidence',
+                    hue='confidence', palette='coolwarm', ax=ax, sizes=(50, 300), legend=False)
+    ax.set_title("RUL vs Component ID (Size = Confidence)", fontsize=14, weight='bold')
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
@@ -36,17 +39,23 @@ def plot_rul_trend(df):
     if 'prediction_time' in df.columns:
         df['prediction_time'] = pd.to_datetime(df['prediction_time'], errors='coerce')
         fig, ax = plt.subplots(figsize=(10, 5))
-        sns.lineplot(data=df, x='prediction_time', y='predicted_value', hue='component_id', marker="o", ax=ax)
-        ax.set_title("RUL Predictions Over Time")
+        sns.set_theme(style="darkgrid")
+        sns.lineplot(data=df, x='prediction_time', y='predicted_value',
+                     hue='component_id', marker="o", ax=ax)
+        ax.set_title("RUL Predictions Over Time", fontsize=14, weight='bold')
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
-# === APP LAYOUT ===
+# === STREAMLIT CONFIG ===
 st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 
+# === DARK THEME CUSTOM CSS ===
 st.markdown("""
 <style>
-    .stApp { background-color: #f2f6fc; }
+    .stApp {
+        background-color: #1e1e2f;
+        color: #f0f0f0;
+    }
     .dashboard-header {
         display: flex;
         align-items: center;
@@ -56,11 +65,28 @@ st.markdown("""
     .dashboard-title {
         font-size: 28px;
         font-weight: bold;
-        color: #003366;
+        color: #f0f0f0;
     }
     .big-font {
         font-size: 18px !important;
-        color: #003366;
+        color: #e0e0e0;
+    }
+    .css-1d391kg, .css-18e3th9 {
+        background-color: #29293d !important;
+        color: #f0f0f0 !important;
+    }
+    .stRadio > div {
+        background-color: #29293d;
+        color: #ffffff;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .stDataFrame {
+        background-color: #2d2d44;
+        color: #ffffff;
+    }
+    .stSlider > div {
+        color: #ffffff;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -135,5 +161,3 @@ if refresh_interval > 0:
     st.info(f"⏳ Auto-refreshing every {refresh_interval} seconds...")
     time.sleep(refresh_interval)
     st.experimental_rerun()
-
-
