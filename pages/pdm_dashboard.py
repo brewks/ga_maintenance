@@ -4,6 +4,7 @@ import sqlite3
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
+import os
 
 # === CONFIG ===
 DB_PATH = "ga_maintenance.db"
