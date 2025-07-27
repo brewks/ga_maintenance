@@ -44,18 +44,36 @@ def plot_rul_trend(df):
 # === APP LAYOUT ===
 st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 
+st.markdown("""
+<style>
+    .stApp { background-color: #f2f6fc; }
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+    .dashboard-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #003366;
+    }
+    .big-font {
+        font-size: 18px !important;
+        color: #003366;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # === HEADER: LOGO + TITLE INLINE ===
-col1, col2 = st.columns([1, 5])
+st.markdown("""
+    <div class="dashboard-header">
+        <img src="../logo.png" width="100">
+        <div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>
+    </div>
+""", unsafe_allow_html=True)
 
-with col1:
-    st.image("path_to_logo.png", width=100)  # Update with correct logo path
-
-with col2:
-    st.markdown(
-        "<h1 style='color:#003366; margin-bottom: 0;'>General Aviation Predictive Maintenance Dashboard</h1>"
-        "<p style='color:#005580; font-size: 16px;'>Live aircraft system health, predictive maintenance insights, and alerts</p>",
-        unsafe_allow_html=True
-    )
+st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
 
 # === SIDEBAR CONTROLS ===
 refresh_interval = st.sidebar.slider("Auto-refresh (seconds)", 0, 60, 10)
@@ -117,3 +135,5 @@ if refresh_interval > 0:
     st.info(f"⏳ Auto-refreshing every {refresh_interval} seconds...")
     time.sleep(refresh_interval)
     st.experimental_rerun()
+
+
