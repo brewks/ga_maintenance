@@ -69,7 +69,7 @@ st.markdown("""
 col1, col2 = st.columns([1, 5])
 
 with col1:
-    st.image("logo.png", width=100)  # logo.png is in the same directory as app.py
+    st.image("logo.png", width=50)  # logo.png is in the same directory as app.py
 
 with col2:
     st.markdown(
