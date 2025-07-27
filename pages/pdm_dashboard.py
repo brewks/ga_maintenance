@@ -66,10 +66,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === HEADER: LOGO + TITLE INLINE ===
-col1, col2 = st.columns([1, 5])
+col1, col2 = st.columns([1, 5])  # Adjust the column sizes for logo and title
 
 with col1:
-    st.image("logo.png", width=50)  # logo.png is in the same directory as app.py
+    st.image("logo.png", width=50)  # Adjust the size of the logo as needed
 
 with col2:
     st.markdown(
