@@ -67,7 +67,7 @@ st.markdown("""
 # === HEADER: LOGO + TITLE INLINE ===
 st.markdown("""
     <div class="dashboard-header">
-        <img src="../logo.png" width="150">
+        <img src="../logo.png" width="100">
         <div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>
     </div>
 """, unsafe_allow_html=True)
