@@ -4,7 +4,6 @@ import sqlite3
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
-import os
 
 # === CONFIG ===
 DB_PATH = "ga_maintenance.db"
@@ -56,50 +55,60 @@ st.markdown("""
         background-color: #1e1e2f;
         color: #f0f0f0;
     }
-    .dashboard-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 10px;
-    }
+
+    /* Header */
     .dashboard-title {
         font-size: 28px;
         font-weight: bold;
-        color: #f0f0f0;
+        color: #00CED1;
     }
+
     .big-font {
         font-size: 18px !important;
         color: #e0e0e0;
     }
+
+    /* Sidebar styling */
+    section[data-testid="stSidebar"] {
+        background-color: #2a2a3d;
+        color: #f0f0f0;
+    }
+
+    /* Sidebar elements */
+    .stRadio > div, .stSlider > div {
+        color: #ffffff;
+    }
+
+    label, .css-1cpxqw2, .css-16idsys {
+        color: #ffffff !important;
+    }
+
+    /* Data table */
     .css-1d391kg, .css-18e3th9 {
         background-color: #29293d !important;
         color: #f0f0f0 !important;
     }
-    .stRadio > div {
-        background-color: #29293d;
-        color: #ffffff;
-        padding: 10px;
-        border-radius: 10px;
+
+    /* Buttons */
+    .stButton>button {
+        background-color: #4169E1;
+        color: white;
+        border-radius: 8px;
     }
-    .stDataFrame {
-        background-color: #2d2d44;
-        color: #ffffff;
-    }
-    .stSlider > div {
-        color: #ffffff;
+    .stButton>button:hover {
+        background-color: #5a8dee;
+        color: #fff;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# === HEADER: LOGO + TITLE INLINE ===
-st.markdown("""
-    <div class="dashboard-header">
-        <img src="logo.png" width="100">
-        <div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>
-    </div>
-""", unsafe_allow_html=True)
-
-st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
+# === HEADER: LOGO + TITLE INLINE (using columns) ===
+col1, col2 = st.columns([1, 6])
+with col1:
+    st.image("logo.png", width=80)
+with col2:
+    st.markdown("<div class='dashboard-title'>General Aviation Predictive Maintenance Dashboard</div>", unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
 
 # === SIDEBAR CONTROLS ===
 refresh_interval = st.sidebar.slider("Auto-refresh (seconds)", 0, 60, 10)
