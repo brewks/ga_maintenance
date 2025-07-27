@@ -8,7 +8,6 @@ import os
 
 # === CONFIG ===
 DB_PATH = "ga_maintenance.db"
-LOGO_PATH = os.path.join(os.path.dirname(__file__), "logo.png")
 
 # === FUNCTIONS ===
 def load_data(query):
@@ -48,11 +47,16 @@ st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 st.markdown("""
 <style>
     .stApp { background-color: #f2f6fc; }
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 10px;
+    }
     .dashboard-title {
         font-size: 28px;
         font-weight: bold;
         color: #003366;
-        padding-top: 5px;
     }
     .big-font {
         font-size: 18px !important;
@@ -62,14 +66,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # === HEADER: LOGO + TITLE INLINE ===
-cols = st.columns([0.2, 0.8])
-with cols[0]:
-    if os.path.exists(LOGO_PATH):
-        st.image(LOGO_PATH, width=100)
-    else:
-        st.warning("⚠ Logo not found at path: `logo.png`")
-with cols[1]:
-    st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
+st.markdown("""
+    <div class="dashboard-header">
+        <img src="../logo.png" width="100">
+        <div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>
+    </div>
+""", unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
 
