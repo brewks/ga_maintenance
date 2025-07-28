@@ -94,7 +94,7 @@ st.markdown("""
     }
 
     .stRadio > div > label {
-        font-weight: 600;
+        font-weight: 500;
         font-size: 14px;
         color: #1f2d4a;
         text-shadow: 1px 1px 0px #fff, -1px -1px 1px rgba(0,0,0,0.08);
@@ -112,7 +112,7 @@ st.markdown("""
 # === HEADER: LOGO + TITLE INLINE ===
 col1, col2 = st.columns([1, 10])
 with col1:
-    st.image("logo.png", width=80)
+    st.image("logo.png", width=100)
 with col2:
     st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
 
@@ -134,7 +134,7 @@ elif view_choice == "Dashboard Snapshot":
 elif view_choice == "Engine Health Overview":
     df = load_data("SELECT * FROM engine_health_view;")
 else:
-    df = load_data("SELECT * FROM component_predictions ORDER BY prediction_time DESC LIMIT 100;")
+    df = load_data("SELECT * FROM component_predictions ORDER BY prediction_time DESC LIMIT 50;")
 
 # === DISPLAY DATA ===
 st.subheader(view_choice)
