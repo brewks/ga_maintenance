@@ -27,8 +27,8 @@ def plot_rul_bar(df):
 
 def plot_confidence_rul(df):
     fig, ax = plt.subplots(figsize=(10, 5))
-    sns.scatterplot(data=df, x='component_id', y='predicted_value', size='confidence',
-                    hue='confidence', palette='coolwarm', ax=ax, sizes=(50, 300))
+    sns.scatterplot(data=df, x='component_id', y='predicted_value', size='confidence', hue='confidence',
+                    palette='coolwarm', ax=ax, sizes=(50, 300))
     ax.set_title("RUL vs Component ID (Size = Confidence)")
     plt.xticks(rotation=45)
     st.pyplot(fig)
@@ -42,73 +42,42 @@ def plot_rul_trend(df):
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
-# === STREAMLIT PAGE CONFIG ===
+# === STREAMLIT CONFIG ===
 st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 
-# === CUSTOM CSS FOR RICH 3D THEME ===
+# === STYLING ===
 st.markdown("""
 <style>
     .stApp {
-        background: linear-gradient(to bottom right, #dce3ed, #f0f2f7);
-        color: #1a1a1a;
-        font-family: 'Segoe UI', sans-serif;
+        background-color: #e9edf5; /* rich light-blue/gray for contrast */
     }
-
     .dashboard-header {
         display: flex;
         align-items: center;
         gap: 20px;
         margin-bottom: 10px;
-        padding: 20px;
-        background: linear-gradient(to right, #ffffff, #e6ecf5);
-        border-radius: 12px;
-        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+        padding-top: 40px;
     }
-
     .dashboard-title {
         font-size: 28px;
-        font-weight: 800;
-        color: #001f3f;
-        text-shadow: 1px 1px 2px #b0b8c4;
+        font-weight: bold;
+        color: #1f2d4a;
     }
-
     .big-font {
         font-size: 18px !important;
-        font-weight: 500;
-        color: #003366;
-        margin-bottom: 10px;
-    }
-
-    .stRadio > div {
-        background-color: #ffffff;
-        padding: 10px;
-        border-radius: 12px;
-        box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .stSlider > div {
-        color: #1a1a1a;
-    }
-
-    .stDataFrame {
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.15);
-        padding: 5px;
-    }
-
-    .block-container {
-        padding-top: 20px;
+        color: #1f2d4a;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # === HEADER: LOGO + TITLE INLINE ===
-col1, col2 = st.columns([1, 10])
-with col1:
-    st.image("logo.png", width=80)
-with col2:
-    st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown("<br>", unsafe_allow_html=True)  # Adds spacing
+    col1, col2 = st.columns([1, 10])
+    with col1:
+        st.image("logo.png", width=80)
+    with col2:
+        st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
 
@@ -171,4 +140,4 @@ else:
 if refresh_interval > 0:
     st.info(f"⏳ Auto-refreshing every {refresh_interval} seconds...")
     time.sleep(refresh_interval)
-    st.rerun()
+    st.experimental_rerun()
