@@ -94,7 +94,7 @@ st.markdown("""
     }
 
     .stRadio > div > label {
-        font-weight: 500;
+        font-weight: 600;
         font-size: 14px;
         color: #1f2d4a;
         text-shadow: 1px 1px 0px #fff, -1px -1px 1px rgba(0,0,0,0.08);
@@ -112,11 +112,11 @@ st.markdown("""
 # === HEADER: LOGO + TITLE INLINE ===
 col1, col2 = st.columns([1, 10])
 with col1:
-    st.image("logo.png", width=100)
+    st.image("logo.png", width=80)
 with col2:
     st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
 
-st.markdown('<p class="big-font">Live Aircraft System Health, Predictive Maintenance Insights, and Alerts</p>', unsafe_allow_html=True)
+st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
 
 # === SIDEBAR CONTROLS ===
 refresh_interval = st.sidebar.slider("Auto-refresh (seconds)", 0, 60, 10)
@@ -134,13 +134,12 @@ elif view_choice == "Dashboard Snapshot":
 elif view_choice == "Engine Health Overview":
     df = load_data("SELECT * FROM engine_health_view;")
 else:
-    df = load_data("SELECT * FROM component_predictions ORDER BY prediction_time DESC LIMIT 50;")
+    df = load_data("SELECT * FROM component_predictions ORDER BY prediction_time DESC LIMIT 100;")
 
 # === DISPLAY DATA ===
-st.markdown(f"""
-    <h4 style='font-size:20px; font-weight:600; color:#f0f0f0;'>{view_choice}</h4>
-    <p style='font-size:14px; color:#cccccc;'>Data Summary: {len(df)} records loaded</p>
-""", unsafe_allow_html=True)
+st.subheader(view_choice)
+st.write(f"### Data Summary: {len(df)} records loaded")
+st.dataframe(df)
 
 if df.empty:
     st.warning("⚠ No data available for this view.")
