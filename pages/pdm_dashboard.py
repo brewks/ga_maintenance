@@ -116,7 +116,7 @@ with col1:
 with col2:
     st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
 
-st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
+st.markdown('<p class="big-font">Live Aircraft System Health, Predictive Maintenance Insights, and Alerts</p>', unsafe_allow_html=True)
 
 # === SIDEBAR CONTROLS ===
 refresh_interval = st.sidebar.slider("Auto-refresh (seconds)", 0, 60, 10)
