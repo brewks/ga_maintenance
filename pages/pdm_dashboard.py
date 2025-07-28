@@ -17,7 +17,7 @@ def load_data(query):
 
 def plot_rul_bar(df):
     fig, ax = plt.subplots(figsize=(10, 5))
-    sns.barplot(data=df, x=df['component_id'].astype(str), y='predicted_value', ax=ax, palette='Blues')
+    sns.barplot(data=df, x=df['component_id'].astype(str), y='predicted_value', ax=ax, palette='crest')
     ax.set_xlabel("Component ID")
     ax.set_ylabel("Predicted RUL (hours)")
     ax.set_title("Latest Component RUL Predictions")
@@ -44,11 +44,12 @@ def plot_rul_trend(df):
 # === APP LAYOUT ===
 st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 
-# === MODERN CUSTOM STYLING ===
+# === MODERN DARK STYLE TO MATCH LOGO ===
 st.markdown("""
 <style>
     .stApp {
-        background-color: #e9edf5;
+        background-color: #1a1a1a;
+        color: #ffffff;
     }
 
     .dashboard-header {
@@ -62,49 +63,48 @@ st.markdown("""
     .dashboard-title {
         font-size: 28px;
         font-weight: bold;
-        color: #1f2d4a;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        color: #ffffff;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
     }
 
     .big-font {
         font-size: 18px !important;
-        color: #1f2d4a;
-        text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        color: #dcdcdc;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
 
     section[data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.6);
+        background: rgba(30, 30, 30, 0.6);
         backdrop-filter: blur(8px);
-        border-right: 1px solid rgba(0,0,0,0.05);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
         box-shadow: inset -3px 0 6px rgba(0,0,0,0.05);
+        color: #ffffff;
     }
 
     .stSlider, .stRadio {
         margin-bottom: 20px;
         padding: 12px;
         border-radius: 12px;
-        background-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        background-color: rgba(50, 50, 50, 0.5);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    .stSlider label, .stRadio label {
+    .stRadio > div > label, .stSlider label {
         font-weight: bold;
-        color: #1f2d4a;
-        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
-    }
-
-    .stRadio > div > label {
-        font-weight: 600;
-        font-size: 14px;
-        color: #1f2d4a;
-        text-shadow: 1px 1px 0px #fff, -1px -1px 1px rgba(0,0,0,0.08);
+        color: #ffffff;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
     }
 
     .element-container:has(.stDataFrame) {
-        background-color: #f9fafd;
+        background-color: #2b2b2b;
         border-radius: 8px;
         padding: 8px;
-        box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.1);
+        color: #ffffff;
+    }
+
+    .stDataFrame, .stTable {
+        color: #ffffff !important;
     }
 </style>
 """, unsafe_allow_html=True)
