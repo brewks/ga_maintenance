@@ -4,7 +4,6 @@ import sqlite3
 import matplotlib.pyplot as plt
 import seaborn as sns
 import time
-import os
 
 # === CONFIG ===
 DB_PATH = "ga_maintenance.db"
@@ -42,15 +41,16 @@ def plot_rul_trend(df):
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
-# === STREAMLIT CONFIG ===
+# === APP LAYOUT ===
 st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 
-# === STYLING ===
+# === MODERN CUSTOM STYLING ===
 st.markdown("""
 <style>
     .stApp {
-        background-color: #e9edf5; /* rich light-blue/gray for contrast */
+        background-color: #e9edf5;
     }
+
     .dashboard-header {
         display: flex;
         align-items: center;
@@ -58,26 +58,63 @@ st.markdown("""
         margin-bottom: 10px;
         padding-top: 40px;
     }
+
     .dashboard-title {
         font-size: 28px;
         font-weight: bold;
         color: #1f2d4a;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
+
     .big-font {
         font-size: 18px !important;
         color: #1f2d4a;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    }
+
+    section[data-testid="stSidebar"] {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        border-right: 1px solid rgba(0,0,0,0.05);
+        box-shadow: inset -3px 0 6px rgba(0,0,0,0.05);
+    }
+
+    .stSlider, .stRadio {
+        margin-bottom: 20px;
+        padding: 12px;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .stSlider label, .stRadio label {
+        font-weight: bold;
+        color: #1f2d4a;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .stRadio > div > label {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1f2d4a;
+        text-shadow: 1px 1px 0px #fff, -1px -1px 1px rgba(0,0,0,0.08);
+    }
+
+    .element-container:has(.stDataFrame) {
+        background-color: #f9fafd;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: inset 0 0 8px rgba(0,0,0,0.03);
     }
 </style>
 """, unsafe_allow_html=True)
 
 # === HEADER: LOGO + TITLE INLINE ===
-with st.container():
-    st.markdown("<br>", unsafe_allow_html=True)  # Adds spacing
-    col1, col2 = st.columns([1, 10])
-    with col1:
-        st.image("logo.png", width=80)
-    with col2:
-        st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
+col1, col2 = st.columns([1, 10])
+with col1:
+    st.image("logo.png", width=80)
+with col2:
+    st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
 
