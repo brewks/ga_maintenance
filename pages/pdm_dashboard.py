@@ -137,8 +137,18 @@ else:
     df = load_data("SELECT * FROM component_predictions ORDER BY prediction_time DESC LIMIT 100;")
 
 # === DISPLAY DATA ===
-st.subheader(view_choice)
-st.write(f"### Data Summary: {len(df)} records loaded")
+st.markdown(f"""
+    <h4 style="font-size:20px; font-weight:600; color:#1f2d4a; margin-bottom:6px;">
+        {view_choice}
+    </h4>
+""", unsafe_allow_html=True)
+
+st.markdown(f"""
+    <p style="font-size:16px; font-weight:400; color:#1f2d4a; margin-top:0;">
+        Data Summary: {len(df)} records loaded
+    </p>
+""", unsafe_allow_html=True)
+
 st.dataframe(df)
 
 if df.empty:
