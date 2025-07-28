@@ -171,4 +171,4 @@ else:
 if refresh_interval > 0:
     st.info(f"⏳ Auto-refreshing every {refresh_interval} seconds...")
     time.sleep(refresh_interval)
-    st.experimental_rerun()
+    st.rerun()
