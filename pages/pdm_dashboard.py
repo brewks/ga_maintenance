@@ -27,7 +27,8 @@ def plot_rul_bar(df):
 
 def plot_confidence_rul(df):
     fig, ax = plt.subplots(figsize=(10, 5))
-    sns.scatterplot(data=df, x='component_id', y='predicted_value', size='confidence', hue='confidence', palette='coolwarm', ax=ax, sizes=(50, 300))
+    sns.scatterplot(data=df, x='component_id', y='predicted_value', size='confidence', hue='confidence',
+                    palette='coolwarm', ax=ax, sizes=(50, 300))
     ax.set_title("RUL vs Component ID (Size = Confidence)")
     plt.xticks(rotation=45)
     st.pyplot(fig)
@@ -41,12 +42,15 @@ def plot_rul_trend(df):
         plt.xticks(rotation=45)
         st.pyplot(fig)
 
-# === APP LAYOUT ===
+# === PAGE CONFIG ===
 st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 
+# === STYLING ===
 st.markdown("""
 <style>
-    .stApp { background-color: #f2f6fc; }
+    .stApp {
+        background-color: #e9edf5; /* Rich, soft slate blue */
+    }
     .dashboard-header {
         display: flex;
         align-items: center;
@@ -56,11 +60,23 @@ st.markdown("""
     .dashboard-title {
         font-size: 28px;
         font-weight: bold;
-        color: #003366;
+        color: #1c1f33;  /* Navy charcoal */
     }
     .big-font {
         font-size: 18px !important;
-        color: #003366;
+        color: #1c1f33;
+    }
+    .stDataFrame, .stTable {
+        background-color: #ffffff;
+        color: #000000;
+    }
+    .stRadio > div {
+        background-color: #d7e3f4;
+        padding: 10px;
+        border-radius: 10px;
+    }
+    .stSlider > div {
+        color: #1c1f33;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -73,6 +89,7 @@ with col2:
     st.markdown('<div class="dashboard-title">General Aviation Predictive Maintenance Dashboard</div>', unsafe_allow_html=True)
 
 st.markdown('<p class="big-font">Live aircraft system health, predictive maintenance insights, and alerts</p>', unsafe_allow_html=True)
+
 # === SIDEBAR CONTROLS ===
 refresh_interval = st.sidebar.slider("Auto-refresh (seconds)", 0, 60, 10)
 
@@ -133,5 +150,3 @@ if refresh_interval > 0:
     st.info(f"⏳ Auto-refreshing every {refresh_interval} seconds...")
     time.sleep(refresh_interval)
     st.experimental_rerun()
-
-
