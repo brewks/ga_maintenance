@@ -137,9 +137,10 @@ else:
     df = load_data("SELECT * FROM component_predictions ORDER BY prediction_time DESC LIMIT 50;")
 
 # === DISPLAY DATA ===
-st.subheader(view_choice)
-st.write(f"### Data Summary: {len(df)} records loaded")
-st.dataframe(df)
+st.markdown(f"""
+    <h4 style='font-size:20px; font-weight:600; color:#f0f0f0;'>{view_choice}</h4>
+    <p style='font-size:14px; color:#cccccc;'>Data Summary: {len(df)} records loaded</p>
+""", unsafe_allow_html=True)
 
 if df.empty:
     st.warning("⚠ No data available for this view.")
