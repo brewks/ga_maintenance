@@ -48,7 +48,7 @@ st.set_page_config(page_title="GA PdM Dashboard", layout="wide")
 st.markdown("""
 <style>
     .stApp {
-        background-color: #4a1f1f;
+        background-color: #333333;
     }
 
     .dashboard-header {
