@@ -68,7 +68,7 @@ st.markdown("""
 
     .big-font {
         font-size: 18px !important;
-        color: #1f2d4a;
+        color: #d32f2f;
         text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
     }
 
