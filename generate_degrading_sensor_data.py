@@ -10,7 +10,7 @@ def generate_degrading_sensor_data(db_path, top_params, num_components=10, num_r
     for comp_id in range(1, num_components + 1):
         tail_number = f"N{np.random.randint(10000, 99999)}"
         for i in range(num_records):
-            timestamp = base_time + timedelta(minutes=i)
+            timestamp = base_time + timedelta(days=i)
             for param in top_params:
                 base_val = max((num_records - i) / num_records, 0)
                 noise = np.random.normal(0, 0.05)
